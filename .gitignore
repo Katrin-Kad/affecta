@@ -1,0 +1,50 @@
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Локальные зависимости и кэш
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.package-lock.json
+.pnpm-debug.log
+
+# TypeScript временные файлы
+dist/
+build/
+out/
+*.tsbuildinfo
+*.d.ts
+
+# Конфигурационные файлы IDE/редактора кода
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Лог-файлы
+*.log
+logs/
+*.log.*
+
+coverage/
+.nyc_output/
+jest-cache/
+jest-transform-cache/
+
+*.lock
+*.swp
+*.swo
+*.bak
+*.tmp
+
+
+.env
+.env.local
+.env.*.local
+
+.cache/
+*.temp
+*.tmp
