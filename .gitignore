@@ -48,3 +48,4 @@ jest-transform-cache/
 .cache/
 *.temp
 *.tmp
+.qodo

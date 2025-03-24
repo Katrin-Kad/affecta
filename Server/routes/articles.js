@@ -26,7 +26,8 @@ const upload = multer({ storage });
 * /api/articles:
 *  post:
 *    summary: Создание новой статьи или задания
-*    description: Создает статью или задание с указанным заголовком, кратким описанием, содержанием, тегами и (опционально) изображением.
+*    description: Создает статью или задание с указанным заголовком, кратким описанием, содержанием, 
+*                 тегами и (опционально) изображением.
 *    tags:
 *      - Articles
 *    security:
@@ -108,8 +109,6 @@ const upload = multer({ storage });
 router.post('/', authMiddleware, checkRole('admin'), upload.single('image'), async (req, res) => {
       try {
         const { title, shortDescription, content, tags, isExercise } = req.body;
-  
-        // Получение пути к файлу, если он загружен
         const imagePath = req.file ? `/uploads/articles/${req.file.filename}` : '';
   
         const newArticle = new Article({

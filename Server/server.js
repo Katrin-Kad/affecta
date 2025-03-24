@@ -46,24 +46,24 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 const PORT = process.env.PORT || 5000;
 
+// Настройка middleware
 app.use(cors());
+app.use(express.json());
 
-// Middleware
-app.use(express.json()); // Для работы с JSON-данными
-
+// Подключение к базе данных
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.error("Failed to connect to MongoDB", err));
+
+// Запуск сервера
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
 
 // Основной маршрут
 app.get('/', (req, res) => {
   res.send("API работает");
 });
-
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
-
 
 const authRoutes = require('./routes/auth');
 app.use('/api', authRoutes);
