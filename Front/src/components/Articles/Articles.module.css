@@ -1,0 +1,7 @@
+.container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 380px); /* Гибкие колонки */
+    gap: 40px;
+    margin-top: 20px;
+    justify-content: center;
+}

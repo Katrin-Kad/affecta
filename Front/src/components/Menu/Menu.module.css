@@ -1,0 +1,17 @@
+.container {
+    display: flex;
+    gap: 80px;
+}
+
+.text {
+    cursor: pointer;
+    font-family: "Jost", sans-serif;
+    font-size: 20px;
+    color: rgba(0, 0, 0, 0.77);
+    transition: border-bottom 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+.text:hover {
+    border-bottom: 2px solid rgba(78, 135, 242, 1);
+    color: rgba(78, 135, 242, 1);
+}

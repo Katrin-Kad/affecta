@@ -1,0 +1,11 @@
+:root {
+  background-color: rgba(255, 255, 255, 1);
+  margin: -8px;
+  padding: 0;
+  box-sizing: border-box;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

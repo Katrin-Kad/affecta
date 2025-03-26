@@ -52,7 +52,8 @@ const upload = multer({ storage });
 *                type: array
 *                items:
 *                  type: string
-*                example: ["sadness"]
+*                example: 
+*                  - "sadness"
 *              isExercise:
 *                type: boolean
 *                example: true
@@ -108,7 +109,13 @@ const upload = multer({ storage });
 */
 router.post('/', authMiddleware, checkRole('admin'), upload.single('image'), async (req, res) => {
       try {
-        const { title, shortDescription, content, tags, isExercise } = req.body;
+        const { title, shortDescription, content, isExercise } = req.body;
+        let { tags } = req.body;
+
+        if (typeof tags === 'string') {
+          tags = tags.split(',').map(tag => tag.trim());
+        }
+
         const imagePath = req.file ? `/uploads/articles/${req.file.filename}` : '';
   
         const newArticle = new Article({
@@ -125,6 +132,7 @@ router.post('/', authMiddleware, checkRole('admin'), upload.single('image'), asy
         await newArticle.save();
         res.status(201).json(newArticle);
       } catch (error) {
+        console.log(error)
         res.status(500).json({ error: 'Ошибка при создании статьи' });
       }
     }
