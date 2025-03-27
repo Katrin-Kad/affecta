@@ -17,7 +17,7 @@ const Articles = ({ page = 1, limit = 10}: ArticlesProps) => {
     return (
         <div className={styles.container}>
             {data?.map((article) => (
-                <Card article={article}/>
+                <Card data={article}/>
             ))}
         </div>
     );

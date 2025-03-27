@@ -1,16 +1,12 @@
 .container {
-    position: relative;
-    z-index: 2;
     display: flex;
     justify-content: space-between;
     padding: 5px 55px 5px 55px;
-    margin: 0;
     background-color: rgba(242, 247, 255, 1);
-    box-shadow: 0px 4px 25px rgba(149, 149, 149, 0.25);
     max-height: 79px;
 }
 
-.container_buttons {
+.container_icons {
     display: flex;
     gap: 10px;
     margin-top: 15px;

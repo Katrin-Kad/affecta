@@ -5,13 +5,27 @@ const UserTestResult = require('../models/UserTestResult');
 const authMiddleware = require('../middlewares/auth');
 const checkRole = require('../middlewares/checkRole');
 const jwt = require('jsonwebtoken');
+const multer = require('multer');
+
+// Настройка хранилища
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'public/uploads/tests/'); // Папка для сохранения изображений
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = `${Date.now()}-${file.originalname}`;
+    cb(null, uniqueSuffix);
+  },
+});
+
+const upload = multer({ storage });
 
 /**
 * @swagger
 * /api/tests:
 *   post:
-*     summary: Создать новый тест
-*     description: Создание нового теста. Доступно только администраторам.
+*     summary: Создание нового теста
+*     description: Создает тест с заголовком, описанием, вопросами, результатами, тегами и (опционально) изображением.
 *     tags:
 *       - Tests
 *     security:
@@ -19,7 +33,7 @@ const jwt = require('jsonwebtoken');
 *     requestBody:
 *       required: true
 *       content:
-*         application/json:
+*         multipart/form-data:
 *           schema:
 *             type: object
 *             properties:
@@ -48,6 +62,15 @@ const jwt = require('jsonwebtoken');
 *                           points:
 *                             type: integer
 *                             example: 5
+*               tags:
+*                 type: array
+*                 items:
+*                   type: string
+*                 example: ["sadness"]
+*               image:
+*                 type: string
+*                 format: binary
+*                 description: "Изображение для теста (опционально)"
 *               results:
 *                 type: array
 *                 items:
@@ -70,11 +93,60 @@ const jwt = require('jsonwebtoken');
 *             schema:
 *               type: object
 *               properties:
-*                 message:
+*                 _id:
 *                   type: string
-*                   example: "Тест успешно создан"
-*                 test:
-*                   type: object
+*                   example: "60d3b41abdacab002f85e0f7"
+*                 title:
+*                   type: string
+*                   example: "Тест на знание JavaScript"
+*                 description:
+*                   type: string
+*                   example: "Этот тест проверяет ваши знания основ JavaScript."
+*                 questions:
+*                   type: array
+*                   items:
+*                     type: object
+*                     properties:
+*                       questionText:
+*                         type: string
+*                         example: "Как ты себя чувствуешь?"
+*                       options:
+*                         type: array
+*                         items:
+*                           type: object
+*                           properties:
+*                             optionText:
+*                               type: string
+*                               example: "Хорошо!"
+*                             points:
+*                               type: integer
+*                               example: 5
+*                 tags:
+*                   type: array
+*                   items:
+*                     type: string
+*                   example: ["sadness"]
+*                 image:
+*                   type: string
+*                   example: "/uploads/tests/example-image.jpg"
+*                 results:
+*                   type: array
+*                   items:
+*                     type: object
+*                     properties:
+*                       minPoints:
+*                         type: integer
+*                         example: 0
+*                       maxPoints:
+*                         type: integer
+*                         example: 10
+*                       description:
+*                         type: string
+*                         example: "Хорошее настроение"
+*                 createdAt:
+*                   type: string
+*                   format: date-time
+*                   example: "2025-01-09T12:34:56Z"
 *       400:
 *         description: Ошибка при создании теста
 *         content:
@@ -85,21 +157,47 @@ const jwt = require('jsonwebtoken');
 *                 error:
 *                   type: string
 *                   example: "Ошибка при создании теста"
+*       500:
+*         description: Внутренняя ошибка сервера
+*         content:
+*           application/json:
+*             schema:
+*               type: object
+*               properties:
+*                 error:
+*                   type: string
+*                   example: "Ошибка сервера"
 */
-router.post('/', authMiddleware, checkRole("admin"), async (req, res) => {
+router.post('/', authMiddleware, checkRole("admin"), upload.single('image'), async (req, res) => {
   try {
-    const { title, description, questions, results } = req.body;
+    let { title, description, questions, results, tags } = req.body;
+
+    if (typeof tags === 'string') {
+      tags = tags.split(',').map(tag => tag.trim());
+    }
+    if (typeof questions === 'string') {
+      questions = JSON.parse(questions);
+    }
+    if (typeof results === 'string') {
+      results = JSON.parse(results);
+    }
+
+    const imagePath = req.file ? `/uploads/tests/${req.file.filename}` : '';
+  
 
     const newTest = new Test({
       title,
       description,
       questions,
       results,
+      tags,
+      image: imagePath,
     });
 
     await newTest.save();
     res.status(201).json({ message: 'Тест успешно создан', test: newTest });
   } catch (err) {
+    console.log(err)
     res.status(400).json({ error: 'Ошибка при создании теста' });
   }
 });
@@ -294,6 +392,16 @@ router.get('/:testId', async (req, res) => {
 *                           points:
 *                             type: integer
 *                             example: 5
+*                 tags:
+*                   type: array
+*                   items:
+*                     type: string
+*                   example: 
+*                     - "sadness"
+*                 image:
+*                   type: string
+*                   format: binary
+*                   description: "Изображение для теста (опционально)"
 *               results:
 *                 type: array
 *                 items:
@@ -333,11 +441,11 @@ router.get('/:testId', async (req, res) => {
 router.put('/:testId', authMiddleware, checkRole("admin"), async (req, res) => {
   try {
     const { testId } = req.params;
-    const { title, description, questions, results } = req.body;
+    const { title, description, questions, results, tags, image } = req.body;
 
     const updatedTest = await Test.findByIdAndUpdate(
           testId,
-          { title, description, questions, results },
+          { title, description, questions, results, tags, image },
           { new: true }
         );
 

@@ -26,7 +26,13 @@ export const articlesApi = createApi({
                 params,
             }),
         }),
+        getTasks: builder.query<ArticlesResponse, { page?: number; limit?: number }>({
+            query: ( params ) => ({
+                url: 'articles/exercise',
+                params,
+            }),
+        }),
     }),
 });
 
-export const { useGetArticlesQuery } = articlesApi;
+export const { useGetArticlesQuery, useGetTasksQuery } = articlesApi;

@@ -5,7 +5,6 @@ const UserTaskResult = require('../models/UserTaskResult');
 const authMiddleware = require('../middlewares/auth');
 const checkRole = require('../middlewares/checkRole'); // Middleware для проверки роли admin
 const multer = require('multer');
-const path = require('path');
 
 // Настройка хранилища
 const storage = multer.diskStorage({
@@ -225,10 +224,10 @@ router.post('/', authMiddleware, checkRole('admin'), upload.single('image'), asy
 router.put('/:id', authMiddleware, checkRole('admin'), async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, shortDescription, content, tags, isExercise } = req.body;
+    const { title, shortDescription, content, tags, isExercise, image } = req.body;
     const updatedArticle = await Article.findByIdAndUpdate(
       id,
-      { title, shortDescription, content, tags, isExercise, updatedAt: Date.now() },
+      { title, shortDescription, content, tags, image, isExercise, updatedAt: Date.now() },
       { new: true }
     );
     res.status(200).json(updatedArticle);

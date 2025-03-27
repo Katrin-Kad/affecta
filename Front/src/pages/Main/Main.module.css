@@ -3,3 +3,27 @@
     margin: 0px 50px 0px;
     padding-bottom: 50px;
 }
+
+.container__last {
+    display: flex;
+    gap: 53px;
+    padding: 30px 95px 30px 90px;
+}
+
+.box {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+.btn {
+    margin-top: 38px;
+    display: flex;
+    justify-content: center;
+}
+
+.main {
+    position: relative;
+    z-index: 1;
+    box-shadow: 0px 4px 25px rgba(149, 149, 149, 0.25);
+}

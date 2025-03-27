@@ -6,7 +6,8 @@
     font-family: 'Open Sans';
     cursor: pointer;
     height: 40px;
-    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out, border 0.3s ease-in-out;
+    align-self: flex-start;
 }
 
 .blue {
@@ -16,6 +17,7 @@
 
 .button:hover {
     background-color: rgba(145, 183, 255, 1);
+    border: 2px solid rgba(145, 183, 255, 1);
     color: rgba(255, 255, 255, 1);
 }
 
@@ -24,7 +26,7 @@
     color: rgba(78, 135, 242, 1);
 }
 
-.squire {
+.square {
     border-radius: 15px;
 }
 
